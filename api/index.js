@@ -18,18 +18,23 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
   console.log('a user connected ' + socket.id);
-  socket.on('join', (data) => {
-    console.log(data);
-  });
+
   socket.on('message', (data) => {
     console.log(data);
-    io.emit('message', data);
+      io.to(data.room).emit('message', data.text);
   });
 
-  socket.on('join', (data) => {
-    console.log(data);
-    io.emit('message', data);
+  socket.on('joinRoom', function (room) {
+    socket.join(room);
+    console.log("Salon rejoint : " + room);
+    console.log(io.sockets.adapter.rooms);
+    io.emit('rooms', [room]);
   });
+
+  socket.on('leaveRoom', function(room) {
+    socket.leave(room);
+    console.log("Salon quitté : " + room);
+  })
 });
 
 server.listen(3000, () => {

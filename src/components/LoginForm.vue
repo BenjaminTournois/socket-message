@@ -2,7 +2,7 @@
   <div>
     <label for="">Login : </label>
     <input v-model="userName" type="text" />
-    <button @click="loginIn()"></button>
+    <button @click="loginIn()">Se connecter</button>
   </div>
 </template>
 

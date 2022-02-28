@@ -1,7 +1,8 @@
 <template>
   <div>
     <input v-model="text" type="text" />
-    <button @click="sendMessage">Envoyer</button>
+    <button @click="sendMessage()">Envoyer</button>
+    <button @click="join()">Rejoindre Salon</button>
   </div>
   <div>
     <ul>
@@ -25,7 +26,9 @@ export default {
       text:""
     };
   },
-  created() {},
+  created() {
+
+  },
   mounted() {
     this.$io.on("message", (msg) => {
       this.messages.push(msg);
@@ -35,6 +38,9 @@ export default {
     sendMessage(){
       console.log(this.text);
       this.$io.emit("message", this.text);
+    },
+    join(){
+      this.$io.emit("join", "1");
     }
   },
 };
