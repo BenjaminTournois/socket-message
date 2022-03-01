@@ -16,7 +16,7 @@ export default {
   methods: {
     loginIn() {
       this.$io.emit("loginIn", this.userName);
-      this.$router.push({ name: "chat" });
+      this.$router.push({ name: "chat" , params: { userName: this.userName }});
     },
   },
 };

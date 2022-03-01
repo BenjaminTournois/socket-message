@@ -21,14 +21,14 @@ io.on('connection', (socket) => {
 
   socket.on('message', (data) => {
     console.log(data);
-      io.to(data.room).emit('message', data.text);
+      io.to(data.room).emit('message', {text:data.text, userName:socket.userName});
   });
 
-  socket.on('joinRoom', function (room) {
+  socket.on('joinRoom', function (data) {
+    const room = data.room;
     socket.join(room);
+    socket.userName = data.userName;
     console.log("Salon rejoint : " + room);
-    console.log(io.sockets.adapter.rooms);
-    io.emit('rooms', [room]);
   });
 
   socket.on('leaveRoom', function(room) {

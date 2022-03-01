@@ -1,6 +1,6 @@
 <template>
   <div>
-    <chat-box></chat-box>
+    <chat-box v-bind:userName="userName"></chat-box>
   </div>
 </template>
 
@@ -10,6 +10,7 @@ export default {
   components: {
     ChatBox: ChatBox,
   },
+  props: ['userName'],
 };
 </script>
 
