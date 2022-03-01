@@ -11,6 +11,11 @@ export default {
     ChatBox: ChatBox,
   },
   props: ['userName'],
+  created() {
+    if (!this.userName) {
+      this.$router.push({ name: "login" });
+    }
+  },
 };
 </script>
 
