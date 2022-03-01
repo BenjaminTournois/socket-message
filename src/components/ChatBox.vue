@@ -3,7 +3,7 @@
     <div>
       <form @submit.prevent="sendMessage()">
         <label>Envoyer un message</label>
-        <input v-model="text" type="text" />
+        <input @input="writing()" v-model="text" type="text" />
         <button type="submit">Envoyer</button>
       </form>
 
@@ -11,6 +11,9 @@
         <p :key="message" v-for="message in messages">
           {{ message.userName }} : {{ message.text }}
         </p>
+      </div>
+      <div v-if="writers.length">
+        {{ writers.filter(w => w !== userName).join(',') }} : ...
       </div>
     </div>
   </div>
@@ -26,6 +29,7 @@ export default {
       messages: [],
       users: [],
       roomName: "saloon",
+      writers:[],
       text: "",
     };
   },
@@ -38,6 +42,17 @@ export default {
         userName: data.userName,
         text: data.text,
       });
+    });
+
+    this.$io.on("disconnect", function(){
+      this.$io.emit("disconnect", { room: this.roomName, userName: this.userName });
+    });
+
+    this.$io.on("writing", (data) => {
+      this.writers = data.writers;
+      if(this.writers.length === 1 && this.writers[0] === this.userName) {
+        this.writers = [];
+      }
     });
 
     this.$io.on("users", (users) => {
@@ -53,6 +68,14 @@ export default {
     leave() {
       this.$io.emit("leaveRoom", this.roomName);
     },
+    writing(){
+      console.log(`${this.userName} is writing...`);
+      if(this.text !== ""){
+        this.$io.emit("writing", { userName: this.userName, room: this.roomName });
+      }else{
+        this.$io.emit("stopWriting", { userName: this.userName, room: this.roomName });
+      }
+    }
   },
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <chat-box v-bind:userName="userName"></chat-box>
+    <chat-box v-if="userName" v-bind:userName="userName"></chat-box>
   </div>
 </template>
 

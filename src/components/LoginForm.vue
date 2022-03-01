@@ -1,8 +1,10 @@
 <template>
   <div>
-    <label for="">Login : </label>
-    <input v-model="userName" type="text" />
-    <button @click="loginIn()">Se connecter</button>
+    <h1>Login</h1>
+    <form @submit.prevent="loginIn()">
+      <input v-model="userName" type="text" />
+      <button type="submit">Se Connecter</button>
+    </form>
   </div>
 </template>
 
@@ -16,7 +18,7 @@ export default {
   methods: {
     loginIn() {
       this.$io.emit("loginIn", this.userName);
-      this.$router.push({ name: "chat" , params: { userName: this.userName }});
+      this.$router.push({ name: "chat", params: { userName: this.userName } });
     },
   },
 };
