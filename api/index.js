@@ -5,6 +5,8 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 
+const writers = [];
+
 var cors = require('cors');
 var corsOptions = {
   origin: '*'
@@ -20,18 +22,40 @@ io.on('connection', (socket) => {
   console.log('a user connected ' + socket.id);
 
   socket.on('message', (data) => {
-    console.log(data);
-      io.to(data.room).emit('message', data.text);
+    writers.splice(writers.indexOf(socket.userName), 1);
+    io.to(data.room).emit('writing', { writers });
+    io.to(data.room).emit('message', { text: data.text, userName: socket.userName });
   });
 
-  socket.on('joinRoom', function (room) {
+  socket.on('joinRoom', function (data) {
+    const room = data.room;
     socket.join(room);
-    console.log("Salon rejoint : " + room);
-    console.log(io.sockets.adapter.rooms);
-    io.emit('rooms', [room]);
+    socket.userName = data.userName;
+    console.log(data.userName + ' à rejoint ' + room);
   });
 
-  socket.on('leaveRoom', function(room) {
+  socket.on('writing', function (data) {
+    if (!writers.includes(data.userName)) {
+      writers.push(data.userName);
+      io.to(data.room).emit('writing', { writers });
+    }
+    console.log(writers);
+  });
+
+  socket.on('stopWriting', function (data) {
+    writers.splice(writers.indexOf(data.userName), 1);
+    io.to(data.room).emit('writing', { writers });
+    console.log(writers);
+  });
+
+
+  socket.on('disconnect', function (data) {
+    console.log('user disconnected ' + socket.id);
+    writers.splice(writers.indexOf(data.userName), 1);
+    io.to(data.room).emit('writing', { writers });
+  });
+
+  socket.on('leaveRoom', function (room) {
     socket.leave(room);
     console.log("Salon quitté : " + room);
   })

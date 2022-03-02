@@ -1,6 +1,6 @@
 <template>
   <div>
-    <chat-box></chat-box>
+    <chat-box v-if="userName" v-bind:userName="userName"></chat-box>
   </div>
 </template>
 
@@ -9,6 +9,12 @@ import ChatBox from "@/components/ChatBox";
 export default {
   components: {
     ChatBox: ChatBox,
+  },
+  props: ['userName'],
+  created() {
+    if (!this.userName) {
+      this.$router.push({ name: "login" });
+    }
   },
 };
 </script>

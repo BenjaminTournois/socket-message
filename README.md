@@ -3,7 +3,11 @@
 ## Project setup
 ```
 npm install
+cd api/ npm install
 ```
+
+## Start server
+cd api/ npm run start
 
 ### Compiles and hot-reloads for development
 ```
